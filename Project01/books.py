@@ -52,6 +52,6 @@ async def create_book(new_book=Body()):
 
 @app.put("/books/update_book")
 async def update_book(updated_book=Body()):
-    for book in range(len(BOOKS)):
-        if BOOKS[book].get("title").casefold() == updated_book.get("title").casefold():
-            BOOKS[book] = updated_book
+    for index, book in enumerate(BOOKS):
+        if book.get("title").casefold() == updated_book.get("title").casefold():
+            BOOKS[index] = updated_book
