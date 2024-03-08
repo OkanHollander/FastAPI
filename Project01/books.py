@@ -62,3 +62,13 @@ async def delete_book(book_title: str):
         if book.get("title").casefold() == book_title.casefold():
             BOOKS.pop(index)
             break
+
+# API Endpoint that can fetch all books
+#from a specific author using either Path Parameters or Query Parameters.
+@app.get("/books_assignment/author")
+async def get_books_by_author(author: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get("author").casefold() == author.casefold():
+            books_to_return.append(book)
+    return books_to_return
