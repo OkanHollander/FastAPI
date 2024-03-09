@@ -3,14 +3,14 @@ from fastapi import Body, FastAPI
 app = FastAPI()
 
 class Book:
-    id: int
+    book_id: int
     title: str
     author: str
     description: str
     rating: int
 
-    def __init__(self, id, title, author, description, rating):
-        self.id = id
+    def __init__(self, book_id, title, author, description, rating):
+        self.book_id = book_id
         self.title = title
         self.author = author
         self.description = description
