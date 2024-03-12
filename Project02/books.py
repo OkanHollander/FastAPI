@@ -56,6 +56,12 @@ async def update_book(book: BookRequest):
         if b.book_id == book.book_id:
             BOOKS[i] = book
 
+@app.delete("/books/{book_id}")
+async def delete_book(book_id: int):
+    for i, b in enumerate(BOOKS):
+        if b.book_id == book_id:
+            BOOKS.pop(i)
+
 @app.get("/books")
 async def read_all_books():
     return BOOKS
