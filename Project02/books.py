@@ -50,6 +50,12 @@ def find_book_id(book: Book):
     book.book_id = 1 if len(BOOKS) == 0 else BOOKS[-1].book_id + 1
     return book
 
+@app.put("/books/update_book")
+async def update_book(book: BookRequest):
+    for i, b in enumerate(BOOKS):
+        if b.book_id == book.book_id:
+            BOOKS[i] = book
+
 @app.get("/books")
 async def read_all_books():
     return BOOKS
