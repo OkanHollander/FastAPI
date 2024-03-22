@@ -10,13 +10,16 @@ from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 
-router = APIRouter()
+router = APIRouter(
+    prefix='/auth',
+    tags=['auth']
+)
 
 SECRET_KEY = "0554859da927ff564fc428398d491b5bae536d469937d25159812cae1bbe80f9"
 ALGORITHM = "HS256"
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 class CreateUserRequest(BaseModel):
     username: str
@@ -72,7 +75,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 
 
-@router.post("/auth", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependancy,
                       CreateUserRequest: CreateUserRequest):
     create_user_model = User(
@@ -87,12 +90,12 @@ async def create_user(db: db_dependancy,
     db.add(create_user_model)
     db.commit()
 
-@router.post("/auth/login", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                      db: db_dependancy):
     user = auth_user(form_data.username, form_data.password, db)
     if not user:
-        return 'Failed to authenticate'
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
     token = create_access_token(user.username,
                                 user.id,
                                 timedelta(minutes=20))
