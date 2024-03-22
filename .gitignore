@@ -2,3 +2,4 @@
 */__pycache__/
 .vscode/settings.json
 Project03/todos.db
+*/*/__pycache__/
