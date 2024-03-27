@@ -57,3 +57,18 @@ async def change_password(user: user_dependancy,
     user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
     db.add(user_model)
     db.commit()
+
+@router.put("/update_phone_number", status_code=status.HTTP_204_NO_CONTENT)
+async def update_phone_number(user: user_dependancy,
+                              db: db_dependancy,
+                              phone_number: str):
+    # check is user is authenticated
+    auth_failed(user)
+    # check if the correct user is fetched
+    user_model = db.query(User).filter(User.id == user.get('id')).first()
+    # bind phone number to user
+    user_model.phone_number = phone_number
+    # update user in database
+    db.add(user_model)
+    # commit changes to database
+    db.commit()
