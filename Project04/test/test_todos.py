@@ -110,6 +110,7 @@ def test_read_one_authenticated(test_todo):
 def test_read_one_authenticated_not_found(test_todo):
     """
     Test that authenticated users can read one todo.
+    This should return a 404 Not Found error, because we supplied an invalid id.
 
     Args:
         test_todo (object): A test todo object.
