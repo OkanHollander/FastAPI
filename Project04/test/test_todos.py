@@ -75,3 +75,19 @@ def test_read_all_authenticated(test_todo):
                                 'complete': False,
                                 'owner_id': 1,
                                 'id': 1,}]
+
+
+def test_read_one_authenticated(test_todo):
+    response = client.get('/todo/1')
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {'title': 'Learn to code',
+                                'description': 'Learn to code',
+                                'priority': 5,
+                                'complete': False,
+                                'owner_id': 1,
+                                'id': 1,}
+
+def test_read_one_authenticated_not_found(test_todo):
+    response = client.get('/todo/999')
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {'detail': 'Todo not found.'}
