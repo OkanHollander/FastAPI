@@ -5,7 +5,8 @@ from fastapi.testclient import TestClient
 import pytest
 from ..database import Base
 from ..main import app
-from ..models import Todos
+from ..models import Todos, User
+from ..routers.auth import bcrypt_context
 
 
 # Create a new TEST SQLITE database for testing
@@ -59,4 +60,26 @@ def test_todo():
     yield todo
     with engine.connect() as conn:
         conn.execute(text("DELETE FROM todos;"))
+        conn.commit()
+
+@pytest.fixture
+def test_user():
+    user = User(
+        first_name="John",
+        last_name="Doe",
+        email="john@example.com",
+        phone_number="+1234567890",
+        hashed_password="jemoederislelijk",
+        role="admin",
+    )
+    db = TestingSessionLocal()
+    db.add(user)
+    db.commit()
+
+    # Delete the test todo object after the test is complete
+    # This will ensure that the test todo object is not left in the database
+    # And that every test ran, will be in a clean database
+    yield user
+    with engine.connect() as conn:
+        conn.execute(text("DELETE FROM users;"))
         conn.commit()
