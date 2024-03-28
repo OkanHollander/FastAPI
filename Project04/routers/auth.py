@@ -2,13 +2,13 @@ from datetime import timedelta, datetime
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from models import User
-from database import SessionLocal
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
+from ..models import User
+from ..database import SessionLocal
 
 router = APIRouter(
     prefix='/auth',
