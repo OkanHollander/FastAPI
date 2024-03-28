@@ -34,7 +34,7 @@ class UserVerification(BaseModel):
     password: str
     new_password: str = Field(min_length=8, max_length=32)
 
-@router.get("/get_user", status_code=status.HTTP_200_OK)
+@router.get("/", status_code=status.HTTP_200_OK)
 async def get_user(user: user_dependancy, db: db_dependancy):
     auth_failed(user)
     user_model = db.query(User).filter(User.id == user.get('id')).first()
