@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 from fastapi import status
+import pytest
+from ..models import Todos
 from ..database import Base
 from ..main import app
 from ..routers.todos import get_current_user, get_db
@@ -42,7 +44,34 @@ app.dependency_overrides[get_current_user] = override_get_current_user
 # force the app to run in testing mode
 client = TestClient(app)
 
-def test_read_all_authenticated():
+# Create a test todo object for testing
+@pytest.fixture
+def test_todo():
+    todo = Todos(
+        title="Learn to code",
+        description="Learn to code",
+        priority=5,
+        complete=False,
+        owner_id=1,
+    )
+    db = TestingSessionLocal()
+    db.add(todo)
+    db.commit()
+
+    # Delete the test todo object after the test is complete
+    # This will ensure that the test todo object is not left in the database
+    # And that every test ran, will be in a clean database
+    yield todo
+    with engine.connect() as conn:
+        conn.execute(text("DELETE FROM todos;"))
+        conn.commit()
+
+def test_read_all_authenticated(test_todo):
     response = client.get('/')
     assert response.status_code == status.HTTP_200_OK
-    assert response.json() == []
+    assert response.json() == [{'title': 'Learn to code',
+                                'description': 'Learn to code',
+                                'priority': 5,
+                                'complete': False,
+                                'owner_id': 1,
+                                'id': 1,}]
