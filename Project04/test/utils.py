@@ -70,7 +70,7 @@ def test_user():
         username="test_user",
         email="john@example.com",
         phone_number="+1234567890",
-        hashed_password="jemoederislelijk",
+        hashed_password=bcrypt_context.hash("testpassword"),
         role="admin",
     )
     db = TestingSessionLocal()
