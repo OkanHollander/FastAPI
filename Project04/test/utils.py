@@ -67,6 +67,7 @@ def test_user():
     user = User(
         first_name="John",
         last_name="Doe",
+        username="test_user",
         email="john@example.com",
         phone_number="+1234567890",
         hashed_password="jemoederislelijk",
