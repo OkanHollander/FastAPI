@@ -208,3 +208,41 @@ def test_update_todo_not_found(test_todo):
     response = client.put('/todo/999', json=request_data)
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {'detail': 'Todo not found.'}
+
+def test_delete_todo(test_todo):
+    """
+    Test that authenticated users can delete a todo.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Make a request to create a new todo
+    response = client.delete('/todo/1')
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    db = TestingSessionLocal()
+    model = db.query(Todos).filter(Todos.id == 1).first()
+
+    assert model is None
+
+def test_delete_todo_not_found(test_todo):
+    """
+    Test that authenticated users can delete a todo.
+    This should return a 404 Not Found error, because we supplied an invalid id.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Make a request to create a new todo
+    response = client.delete('/todo/999')
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {'detail': 'Todo not found.'}
+
