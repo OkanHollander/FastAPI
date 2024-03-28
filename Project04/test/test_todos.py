@@ -153,3 +153,58 @@ def test_create_todo(test_todo):
     assert model.description == request_data.get('description')
     assert model.priority == request_data.get('priority')
     assert model.complete == request_data.get('complete')
+
+def test_update_todo(test_todo):
+    """
+    Test that authenticated users can update a todo.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Create dummy todo data
+    request_data = {
+        'title': 'Updated todo title',
+        'description': 'Updated todo description',
+        'priority': 1,
+        'complete': True,
+    }
+
+    # Make a request to create a new todo
+    response = client.put('/todo/1', json=request_data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    db = TestingSessionLocal()
+    model = db.query(Todos).filter(Todos.id == 1).first()
+
+    assert model.title == request_data.get('title')
+    assert model.description == request_data.get('description')
+    assert model.priority == request_data.get('priority')
+
+def test_update_todo_not_found(test_todo):
+    """
+    Test that authenticated users can update a todo.
+    This should return a 404 Not Found error, because we supplied an invalid id.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Create dummy todo data
+    request_data = {
+        'title': 'Updated todo title',
+        'description': 'Updated todo description',
+        'priority': 1,
+        'complete': True,
+    }
+
+    # Make a request to create a new todo
+    response = client.put('/todo/999', json=request_data)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {'detail': 'Todo not found.'}
