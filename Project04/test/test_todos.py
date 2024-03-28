@@ -107,7 +107,7 @@ def test_read_one_authenticated(test_todo):
                                 'owner_id': 1,
                                 'id': 1,}
 
-def test_read_one_authenticated_not_found(test_todo):
+def test_read_one_authenticated_not_found():
     """
     Test that authenticated users can read one todo.
     This should return a 404 Not Found error, because we supplied an invalid id.
@@ -184,7 +184,7 @@ def test_update_todo(test_todo):
     assert model.description == request_data.get('description')
     assert model.priority == request_data.get('priority')
 
-def test_update_todo_not_found(test_todo):
+def test_update_todo_not_found():
     """
     Test that authenticated users can update a todo.
     This should return a 404 Not Found error, because we supplied an invalid id.
@@ -229,7 +229,7 @@ def test_delete_todo(test_todo):
 
     assert model is None
 
-def test_delete_todo_not_found(test_todo):
+def test_delete_todo_not_found():
     """
     Test that authenticated users can delete a todo.
     This should return a 404 Not Found error, because we supplied an invalid id.
