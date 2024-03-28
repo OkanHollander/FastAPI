@@ -25,4 +25,54 @@ def test_return_user(test_user):
     assert response.json()['email'] == 'john@example.com'
     assert response.json()['phone_number'] == '+1234567890'
 
-    
+def test_change_password(test_user):
+    """
+    Test that authenticated users can change their password.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Make a request to create a new todo
+    response = client.put('/user/change_password', json={
+        'password': 'testpassword',
+        'new_password': 'newpassword'
+    })
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+def test_change_password_incorrect_password(test_user):
+    """
+    Test that authenticated users can change their password.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Make a request to create a new todo
+    response = client.put('/user/change_password', json={
+        'password': 'wrongpassword',
+        'new_password': 'newpassword'
+    })
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.json() == {'detail': 'Incorrect password.'}
+
+def test_change_phone_number(test_user):
+    """
+    Test that authenticated users can change their phone number.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
+    # Make a request to create a new todo
+    response = client.put('/user/update_phone_number/123123123')
+    assert response.status_code == status.HTTP_204_NO_CONTENT
