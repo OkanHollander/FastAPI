@@ -1,4 +1,4 @@
-from fastapi import status
+from fastapi import status, HTTPException
 from jose import jwt
 from datetime import timedelta
 import pytest
@@ -50,3 +50,14 @@ async def test_get_current_valid_token():
     assert user['username'] == 'testuser'
     assert user['id'] == 1
     assert user['user_role'] == 'admin'
+
+@pytest.mark.asyncio
+async def test_get_current_invalid_token():
+    encode = {'role': 'user'}
+    token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    with pytest.raises(HTTPException) as exc_info:
+        await get_current_user(token=token)
+    assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+    assert exc_info.value.detail == 'Could not validate credentials'
+    
