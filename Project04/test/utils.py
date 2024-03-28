@@ -6,7 +6,7 @@ import pytest
 from ..database import Base
 from ..main import app
 from ..models import Todos, User
-from ..routers.auth import bcrypt_context, auth_user
+from ..routers.auth import bcrypt_context
 
 
 # Create a new TEST SQLITE database for testing
