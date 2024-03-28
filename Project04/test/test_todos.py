@@ -67,6 +67,16 @@ def test_todo():
         conn.commit()
 
 def test_read_all_authenticated(test_todo):
+    """
+    Test that authenticated users can read all todos.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
     response = client.get('/')
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [{'title': 'Learn to code',
@@ -78,6 +88,16 @@ def test_read_all_authenticated(test_todo):
 
 
 def test_read_one_authenticated(test_todo):
+    """
+    Test that authenticated users can read one todo.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
     response = client.get('/todo/1')
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {'title': 'Learn to code',
@@ -88,6 +108,16 @@ def test_read_one_authenticated(test_todo):
                                 'id': 1,}
 
 def test_read_one_authenticated_not_found(test_todo):
+    """
+    Test that authenticated users can read one todo.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
     response = client.get('/todo/999')
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {'detail': 'Todo not found.'}
