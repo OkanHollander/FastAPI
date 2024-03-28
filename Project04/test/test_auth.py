@@ -1,9 +1,11 @@
 from fastapi import status
+from jose import jwt
+from datetime import timedelta
 from .utils import *
-from ..routers.auth import get_current_user, get_db
+from ..routers.auth import get_db, auth_user, create_access_token, SECRET_KEY, ALGORITHM
+
 
 app.dependency_overrides[get_db] = override_get_db
-app.dependency_overrides[get_current_user] = override_get_current_user
 
 def test_auth_user(test_user):
     db = TestingSessionLocal()
@@ -23,3 +25,17 @@ def test_auth_user(test_user):
                                     'wrongpassword',
                                     db)
     assert wrong_password_user is False
+
+def test_create_access_token(test_user):
+    username = 'testuser'
+    user_id = 1
+    role = 'user'
+    expires_delta = timedelta(days=1)
+
+    token = create_access_token(username, user_id, role, expires_delta)
+
+    decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={'verify_signature': False})
+
+    assert decoded_token['sub'] == username
+    assert decoded_token['id'] == user_id
+    assert decoded_token['role'] == role
