@@ -1,8 +1,9 @@
 from fastapi import status
 from jose import jwt
 from datetime import timedelta
+import pytest
 from .utils import *
-from ..routers.auth import get_db, auth_user, create_access_token, SECRET_KEY, ALGORITHM
+from ..routers.auth import get_db, auth_user, create_access_token, SECRET_KEY, ALGORITHM, get_current_user
 
 
 app.dependency_overrides[get_db] = override_get_db
@@ -39,3 +40,13 @@ def test_create_access_token(test_user):
     assert decoded_token['sub'] == username
     assert decoded_token['id'] == user_id
     assert decoded_token['role'] == role
+
+@pytest.mark.asyncio
+async def test_get_current_valid_token():
+    encode = {'sub': 'testuser', 'id': 1, 'role': 'admin'}
+    token = jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    user = await get_current_user(token=token)
+    assert user['username'] == 'testuser'
+    assert user['id'] == 1
+    assert user['user_role'] == 'admin'
