@@ -124,6 +124,16 @@ def test_read_one_authenticated_not_found(test_todo):
     assert response.json() == {'detail': 'Todo not found.'}
 
 def test_create_todo(test_todo):
+    """
+    Test that authenticated users can create a new todo.
+
+    Args:
+        test_todo (object): A test todo object.
+
+    Returns:
+        None
+
+    """
     # Create dummy todo data
     request_data = {
         'title': 'New todo title',
@@ -143,4 +153,3 @@ def test_create_todo(test_todo):
     assert model.description == request_data.get('description')
     assert model.priority == request_data.get('priority')
     assert model.complete == request_data.get('complete')
-    
