@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append("..")
 
 from fastapi import Depends, HTTPException, status, APIRouter, Request
@@ -20,6 +21,7 @@ ALGORITHM = "HS256"
 
 templates = Jinja2Templates(directory="templates")
 
+
 class CreateUser(BaseModel):
     username: str
     email: Optional[str]
@@ -36,9 +38,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 
 
 router = APIRouter(
-    prefix="/auth",
-    tags=["auth"],
-    responses={401: {"user": "Not authorized"}}
+    prefix="/auth", tags=["auth"], responses={401: {"user": "Not authorized"}}
 )
 
 
@@ -59,9 +59,7 @@ def verify_password(plain_password, hashed_password):
 
 
 def authenticate_user(username: str, password: str, db):
-    user = db.query(models.Users)\
-        .filter(models.Users.username == username)\
-        .first()
+    user = db.query(models.Users).filter(models.Users.username == username).first()
 
     if not user:
         return False
@@ -70,8 +68,9 @@ def authenticate_user(username: str, password: str, db):
     return user
 
 
-def create_access_token(username: str, user_id: int,
-                        expires_delta: Optional[timedelta] = None):
+def create_access_token(
+    username: str, user_id: int, expires_delta: Optional[timedelta] = None
+):
 
     encode = {"sub": username, "id": user_id}
     if expires_delta:
@@ -112,15 +111,14 @@ async def create_new_user(create_user: CreateUser, db: Session = Depends(get_db)
 
 
 @router.post("/token")
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
-                                 db: Session = Depends(get_db)):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise token_exception()
     token_expires = timedelta(minutes=20)
-    token = create_access_token(user.username,
-                                user.id,
-                                expires_delta=token_expires)
+    token = create_access_token(user.username, user.id, expires_delta=token_expires)
     return {"token": token}
 
 
@@ -128,11 +126,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 async def authenticationpage(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+
 @router.get("/register", response_class=HTMLResponse)
 async def registerpage(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-#Exceptions
+
+# Exceptions
 def get_user_exception():
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -149,15 +149,3 @@ def token_exception():
         headers={"WWW-Authenticate": "Bearer"},
     )
     return token_exception_response
-
-
-
-
-
-
-
-
-
-
-
-
