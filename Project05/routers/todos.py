@@ -39,7 +39,9 @@ async def read_all_by_user(request: Request, db: Session = Depends(get_db)):
 
     todos = db.query(models.Todos).filter(models.Todos.owner_id == user.get("id")).all()
 
-    return templates.TemplateResponse("home.html", {"request": request, "todos": todos, "user": user})
+    return templates.TemplateResponse(
+        "home.html", {"request": request, "todos": todos, "user": user}
+    )
 
 
 @router.get("/add-todo", response_class=HTMLResponse)
@@ -48,8 +50,10 @@ async def add_new_todo(request: Request):
     user = await get_current_user(request=request)
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    
-    return templates.TemplateResponse("add-todo.html", {"request": request, "user": user})
+
+    return templates.TemplateResponse(
+        "add-todo.html", {"request": request, "user": user}
+    )
 
 
 @router.post("/add-todo", response_class=HTMLResponse)
@@ -60,11 +64,11 @@ async def create_todo(
     priority: int = Form(...),
     db: Session = Depends(get_db),
 ):
-    
+
     user = await get_current_user(request=request)
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    
+
     todo_model = models.Todos()
     todo_model.title = title
     todo_model.description = description
@@ -84,7 +88,7 @@ async def edit_todo(request: Request, todo_id: int, db: Session = Depends(get_db
     user = await get_current_user(request=request)
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    
+
     todo = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
 
     return templates.TemplateResponse(
@@ -101,11 +105,11 @@ async def update_todo(
     priority: int = Form(...),
     db: Session = Depends(get_db),
 ):
-    
+
     user = await get_current_user(request=request)
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    
+
     todo_model = db.query(models.Todos).filter(models.Todos.id == todo_id).first()
 
     todo_model.title = title
