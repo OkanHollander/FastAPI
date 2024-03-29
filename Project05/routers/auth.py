@@ -50,7 +50,7 @@ class LoginForm:
 
     async def create_oauth_form(self):
         form = await self.request.form()
-        self.username = form.get("username")
+        self.username = form.get("email")
         self.password = form.get("password")
 
 
