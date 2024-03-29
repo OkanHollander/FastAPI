@@ -26,6 +26,8 @@
               <button type="button" class="btn btn-success">Complete</button>
               <button onclick="window.location.href='edit-todo/{{ todo.id }}'"
                       type="button" class="btn btn-info">Edit</button>
+              <button onclick="window.location.href='/todos/delete/{{ todo.id }}'"
+                      type="button" class="btn btn-danger">Delete</button>
             </td>
           </tr>
           {% endfor %}
